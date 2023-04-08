@@ -1,6 +1,8 @@
 const { Server } = require('socket.io');
 const { createServer } = require('http');
-
+require('dotenv').config();
+const { PORT = 3000 } = process.env;
+console.log(PORT);
 const httpServer = createServer();
 
 const io = new Server(httpServer, {
@@ -113,4 +115,4 @@ io.on('connection', socket => {
   });
 });
 
-httpServer.listen(5000);
+httpServer.listen(PORT);
