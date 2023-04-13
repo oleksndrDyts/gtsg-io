@@ -59,57 +59,87 @@ io.on('connection', socket => {
     io.to(pass).emit('get-song', [...rooms.get(pass)][1].song);
   });
 
-  socket.on('set-playerSongText', ({ playerSongText }) => {
-    [...rooms.get(pass)][1].gameState.playerSongText = playerSongText;
+  socket.on('set-playerSongText', data => {
+    if (data.isPlaying === false) {
+      return;
+    }
 
-    io.to(pass).emit(
-      'get-playerSongText',
-      [...rooms.get(pass)][1].gameState.playerSongText
-    );
+    [...rooms.get(pass)][1].gameState.playerSongText = data.playerSongText;
+
+    socket
+      .to(pass)
+      .emit(
+        'get-playerSongText',
+        [...rooms.get(pass)][1].gameState.playerSongText
+      );
   });
 
-  socket.on('set-comparedResult', ({ comparedResult }) => {
-    [...rooms.get(pass)][1].gameState.comparedResult = comparedResult;
+  socket.on('set-comparedResult', data => {
+    if (data.isPlaying === false) {
+      return;
+    }
 
-    io.to(pass).emit(
-      'get-comparedResult',
-      [...rooms.get(pass)][1].gameState.comparedResult
-    );
+    [...rooms.get(pass)][1].gameState.comparedResult = data.comparedResult;
+
+    socket
+      .to(pass)
+      .emit(
+        'get-comparedResult',
+        [...rooms.get(pass)][1].gameState.comparedResult
+      );
+
+    // io.to(pass).emit(
+    //   'get-comparedResult',
+    //   [...rooms.get(pass)][1].gameState.comparedResult
+    // );
   });
 
-  socket.on('set-isPlayerWon', ({ isPlayerWon }) => {
-    [...rooms.get(pass)][1].gameState.isPlayerWon = isPlayerWon;
+  socket.on('set-isPlayerWon', data => {
+    if (data.isPlaying === false) {
+      return;
+    }
 
-    io.to(pass).emit(
-      'get-isPlayerWon',
-      [...rooms.get(pass)][1].gameState.isPlayerWon
-    );
+    [...rooms.get(pass)][1].gameState.isPlayerWon = data.isPlayerWon;
+
+    socket
+      .to(pass)
+      .emit('get-isPlayerWon', [...rooms.get(pass)][1].gameState.isPlayerWon);
   });
 
-  socket.on('set-isResultCompared', ({ isResultCompared }) => {
-    [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
+  socket.on('set-isResultCompared', data => {
+    if (data.isPlaying === false) {
+      return;
+    }
 
-    io.to(pass).emit(
-      'get-isResultCompared',
-      [...rooms.get(pass)][1].gameState.isResultCompared
-    );
+    [...rooms.get(pass)][1].gameState.isResultCompared = data.isResultCompared;
+    socket
+      .to(pass)
+      .emit(
+        'get-isResultCompared',
+        [...rooms.get(pass)][1].gameState.isResultCompared
+      );
   });
   socket.on('set-isItemOpen', data => {
-    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
-
-    io.to(pass).emit('get-isItemOpen', data);
+    if (data.isPlaying === false) {
+      return;
+    }
+    socket.to(pass).emit('get-isItemOpen', data);
   });
 
   socket.on('set-isUserAddWord', data => {
-    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
+    if (data.isPlaying === false) {
+      return;
+    }
 
-    io.to(pass).emit('get-isUserAddWord', data);
+    socket.to(pass).emit('get-isUserAddWord', data);
   });
 
   socket.on('set-itemText', data => {
-    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
+    if (data.isPlaying === false) {
+      return;
+    }
 
-    io.to(pass).emit('get-itemText', data);
+    socket.to(pass).emit('get-itemText', data);
   });
 
   socket.on('set-gameProcess', data => {
@@ -128,6 +158,9 @@ io.on('connection', socket => {
   socket.on('set-changeScore', data => {
     // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
     // io.to(pass).emit('get-changeScore', data);
+    if (data.player === false) {
+      return;
+    }
     socket.to(pass).emit('get-changeScore', data);
   });
 });
