@@ -143,21 +143,22 @@ io.on('connection', socket => {
   });
 
   socket.on('set-gameProcess', data => {
-    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
+    if (data.isPlaying === false) {
+      return;
+    }
 
-    io.to(pass).emit('get-gameProcess', data);
+    socket.to(pass).emit('get-gameProcess', data);
   });
 
   socket.on('set-changePlayer', data => {
-    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
-
-    // io.to(pass).emit('get-changePlayer', data);
+    console.log(data);
+    if (data.isPlaying === false) {
+      return;
+    }
     socket.to(pass).emit('get-changePlayer', data);
   });
 
   socket.on('set-changeScore', data => {
-    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
-    // io.to(pass).emit('get-changeScore', data);
     if (data.player === false) {
       return;
     }
