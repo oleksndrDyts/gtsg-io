@@ -2,7 +2,6 @@ const { Server } = require('socket.io');
 const { createServer } = require('http');
 require('dotenv').config();
 const { PORT = 3000 } = process.env;
-console.log(PORT);
 const httpServer = createServer();
 
 const io = new Server(httpServer, {
@@ -27,7 +26,6 @@ const initialGameState = {
 };
 
 io.on('connection', socket => {
-  console.log('created');
   const rooms = io.of('/').adapter.rooms;
   let pass = (Date.now() + '').substring(9);
 
@@ -61,12 +59,6 @@ io.on('connection', socket => {
     io.to(pass).emit('get-song', [...rooms.get(pass)][1].song);
   });
 
-  // socket.on('set-gameState', data => {
-  //   [...rooms.get(pass)][1].gameState = data;
-
-  //   io.to(pass).emit('get-gameState', [...rooms.get(pass)][1].gameState);
-  // });
-  // ============================
   socket.on('set-playerSongText', ({ playerSongText }) => {
     [...rooms.get(pass)][1].gameState.playerSongText = playerSongText;
 
@@ -112,6 +104,31 @@ io.on('connection', socket => {
     // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
 
     io.to(pass).emit('get-isUserAddWord', data);
+  });
+
+  socket.on('set-itemText', data => {
+    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
+
+    io.to(pass).emit('get-itemText', data);
+  });
+
+  socket.on('set-gameProcess', data => {
+    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
+
+    io.to(pass).emit('get-gameProcess', data);
+  });
+
+  socket.on('set-changePlayer', data => {
+    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
+
+    // io.to(pass).emit('get-changePlayer', data);
+    socket.to(pass).emit('get-changePlayer', data);
+  });
+
+  socket.on('set-changeScore', data => {
+    // [...rooms.get(pass)][1].gameState.isResultCompared = isResultCompared;
+    // io.to(pass).emit('get-changeScore', data);
+    socket.to(pass).emit('get-changeScore', data);
   });
 });
 
