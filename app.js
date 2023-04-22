@@ -53,10 +53,14 @@ io.on('connection', socket => {
     pass = data.password;
   });
 
-  socket.on('set-song', ({ song }) => {
-    [...rooms.get(pass)][1].song = song;
+  socket.on('set-song', data => {
+    if (data.typeOfConnection === 'connect') {
+      return;
+    }
 
-    io.to(pass).emit('get-song', [...rooms.get(pass)][1].song);
+    [...rooms.get(pass)][1].song = data.song;
+
+    socket.to(pass).emit('get-song', [...rooms.get(pass)][1].song);
   });
 
   socket.on('set-playerSongText', data => {
@@ -151,7 +155,6 @@ io.on('connection', socket => {
   });
 
   socket.on('set-changePlayer', data => {
-    console.log(data);
     if (data.isPlaying === false) {
       return;
     }
@@ -164,6 +167,8 @@ io.on('connection', socket => {
     }
     socket.to(pass).emit('get-changeScore', data);
   });
+
+  socket.on('disconnect', () => {});
 });
 
 httpServer.listen(PORT);
